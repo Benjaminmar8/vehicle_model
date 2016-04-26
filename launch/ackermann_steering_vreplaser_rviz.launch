@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+
+<!-- ackermann_steering_rviz.launch-->
+
+<launch>
+  <arg name="namespace" default="ackermann_steering"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="vrep_ros_baselink_broadcaster" args="-0.24 0 0 1.571 3.1415 1.571 base_link_vrep base_link 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="ros_baselink_baselink90" args="0 0 0 -1.571 0 0 base_link base_link90 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="ros_baselink90_frontaxle" args="0.765 0 0 0 0 0 base_link90 front_axle 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="ros_baselink_laser_broadcaster" args="0 -1.2 0.3850 -1.571 0 0 base_link Hokuyo_URG_04LX_UG01_ROS 100"/>
+> 
+
+  <include file="$(find vehicle_model)/launch/vehicle_model.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+  <!-- joy node -->
+  <node respawn="true" pkg="joy" type="joy_node" name="joy_node" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0" />
+    <!--<remap from="joy" to="/joyRosBubbleRob/joy"/> -->
+  </node>
+
+  <!-- ackerman steering joy node -->
+  <node respawn="true" pkg="vehicle_model" type="ackermannSteering" name="joyAckermannSteering" >
+    
+  </node>
+
+  <!-- vehicle pose publisher node -->
+  <!-- <node respawn="true" pkg="vehicle_state_publisher" type="vehicle_state_publisher_node" name="vsp_node" output="screen"/> -->
+  <node respawn="true" pkg="vehicle_state_publisher" type="vehicle_odomsim_node" name="vehicle_odomsim_node" output="screen"/>
+  
+
+  <!-- mapping component 
+  <node respawn="true" pkg="local_map" type="local_map" name="map_node" output="screen">
+    <remap from="map_node/scan" to="vrep/front_scan"/>
+    <param name="map_width" value="35" />
+    <param name="map_height" value="35" />
+    <param name="map_resolution" value="0.25" />
+  </node> -->
+
+  <!-- gmapping: requires odom, which is published by vrep in simulation, published by ekf in real -->
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="log">
+    <remap from="scan" to="vrep/front_scan"/>
+    <param name="base_frame" value="base_link"/>
+    <param name="odom_frame" value="world"/>
+    <param name="map_frame" value="map"/> 
+       <param name="particles" value="1" />
+    <param name="sigma" value ="0.00" />
+    <param name="linearUpdate" value ="10000" />
+    <param name="angularUpdate" value ="10000" />
+    <param name="srr" value ="0.00" />
+    <param name="srt" value ="0.00" />
+    <param name="str" value ="0.00" />
+    <param name="stt" value ="0.00" />
+    <param name="xmin" value="-100" />
+    <param name="xmax" value="100" />
+    <param name="ymin" value="-100" />
+    <param name="ymax" value="100" />
+    <param name="minimumScore" value="10000" />
+    <param name="temporalUpdate" value="1" />
+    <param name="maxRange" value="15" />
+    <param name="maxUrange" value="9" />
+    <param name="map_update_interval" value="1.0" />
+    <param name="delta" value="0.25" />
+  </node> 
+
+<!--
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    
+    <param name="pub_map_odom_transform" value="true"/>
+    <param name="pub_map_scanmatch_transform" value="false" />
+    <param name="map_frame" value="/map"/>
+    <param name="base_frame" value="/base_link" />  
+    <param name="odom_frame" value="/world" />  
+
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" type="bool" value="false"/>
+
+    <param name="map_resolution" value="0.025"/>
+    <param name="map_size" value="2048"/>
+    <param name="map_start_x" value="0.0"/>
+    <param name="map_start_y" value="0.0" />
+    <param name="map_multi_res_levels" value="2" />
+
+    <param name="update_factor_free" value="0.4"/>      	
+    <param name="update_factor_occupied" value="0.9" />    	
+    <param name="map_update_distance_thresh" value="0.2"/>	
+    <param name="map_update_angle_thresh" value="0.6" />	
+    <param name="laser_z_min_value" value = "-0.5" />		
+    <param name="laser_z_max_value" value = "2.0" />		
+    <param name="map_pub_period" value="1.0" />    
+
+    <param name="advertise_map_service" value="true"/>
+    
+    <param name="scan_subscriber_queue_size" value="5"/>   
+    <param name="scan_topic" value="vrep/front_scan"/>
+
+</node>
+-->
+
+  <!-- vehicle path follower node 
+  <node respawn="true" pkg="vehicle_path_follower" type="vehicle_path_follower_node" name="vpf_node" output="screen" >
+    <param name="P_SteerGain" type="double" value="0.0" />
+    <param name="I_SteerGain" value="0.0" />
+    <param name="D_SteerGain" value="0.0" />
+    <param name="I_SteerMin" value="0.0" />
+    <param name="I_SteerMax" value="0.0" />
+  </node> -->
+
+ <node respawn="true" pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen" >
+    <param name="target_frame_name" type="string" value="/world" />
+    <param name="source_frame_name" type="string" value="/front_axle" />
+    <param name="trajectory_update_rate" type="double" value="25" />
+   <param name="trajectory_publish_rate" type="double" value="25" />
+  </node>
+
+  <include file="$(find vehicle_model)/launch/rviz.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+  <!-- Move base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+    <param name="footprint_padding" value="0.01" />
+    <param name="recovery_behavior_enabled" value="false" />
+    <param name="clearing_rotation_allowed" value="false" />
+    <param name="controller_frequency" value="10.0" />
+    <param name="controller_patience" value="100.0" />
+
+    <param name="base_global_planner" value="SBPLLatticePlanner" />
+    <!--rosparam file="$(find sbpl_lattice_planner)/launch/base_local_planner_params_close.yaml" command="load" /-->
+    <param name="base_local_planner" value="toyota_localplanner/ToyotaLocalPlanner" />
+    <!--param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /-->
+    <param name="SBPLLatticePlanner/primitive_filename" value="$(find sbpl)/matlab/mprim/toyota_025_6.mprim" />
+    <rosparam file="$(find vehicle_model)/launch/vehicle/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find vehicle_model)/launch/vehicle/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find vehicle_model)/launch/vehicle/local_costmap_params_close.yaml" command="load" />
+    <rosparam file="$(find vehicle_model)/launch/vehicle/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find vehicle_model)/launch/vehicle/toyota_localplanner_params.yaml" command="load" />
+    <rosparam file="$(find vehicle_model)/launch/vehicle/sbpl_global_params.yaml" command="load" />
+  </node>
+
+</launch>

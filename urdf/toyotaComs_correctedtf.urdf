@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<robot name="toyotaComs">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.9200 2.2025 0.1015"/>
+      </geometry>
+      <origin rpy="0 0 0 " xyz="0 0 0.225"/>
+      <material name="white">
+         <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+         <box size="0.9200 2.2025 0.1015"/>
+      </geometry>
+      <origin rpy="0 0 0 " xyz="0 0 0.225"/>
+    </collision>
+    <inertial>
+      <mass value="10"/>
+      <inertia ixx="0.012" ixy="0.0" ixz="0.0" iyy="0.012" iyz="0.0" izz="0.008"/>
+    </inertial>
+  </link>
+
+
+<link name="left_back_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+      <material name="black">
+       <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="left_back_wheel_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="left_back_wheel"/>
+    <origin rpy="1.57075 0 1.57075 " xyz="0.46 0.765 0.225"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+<link name="inner_left_back_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+      <material name="grey">
+       <color rgba="0.4 0.4 0.4 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="inner_left_back_wheel_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <parent link="left_back_wheel"/>
+    <child link="inner_left_back_wheel"/>
+    <origin rpy="0 0 0 " xyz="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+
+<link name="right_back_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+      <material name="black">
+       <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="right_back_wheel_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="right_back_wheel"/>
+    <origin rpy="1.57075 0 1.57075 " xyz="-0.46 0.765 0.225"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+<link name="inner_right_back_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+      <material name="grey">
+       <color rgba="0.4 0.4 0.4 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="inner_right_back_wheel_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <parent link="right_back_wheel"/>
+    <child link="inner_right_back_wheel"/>
+    <origin rpy="0 0 0 " xyz="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+
+<link name="left_front_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+      <material name="black">
+       <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="nakedCar_steeringLeft" type="revolute"> <!--left_front_wheel_joint-->
+    <axis xyz="0 1 0"/>
+    <parent link="base_link"/>
+    <child link="left_front_wheel"/>
+    <origin rpy="1.57075 0 1.57075 " xyz="0.46 -0.765 0.225"/>
+    <limit effort="1000.0" lower="-0.785" upper="0.785" velocity="0.5"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+<link name="inner_left_front_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+      <material name="grey">
+       <color rgba="0.4 0.4 0.4 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="inner_left_front_wheel_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <parent link="left_front_wheel"/>
+    <child link="inner_left_front_wheel"/>
+    <origin rpy="0 0 0 " xyz="0.0 0.0 0.0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+<link name="right_front_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+      <material name="black">
+       <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.24" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="nakedCar_steeringRight" type="revolute"> <!-- right_front_wheel_joint -->
+    <axis xyz="0 1 0"/>
+    <parent link="base_link"/>
+    <child link="right_front_wheel"/>
+    <origin rpy="1.57075 0 1.57075 " xyz="-0.46 -0.765 0.225"/>
+    <limit effort="1000.0" lower="-0.785" upper="0.785" velocity="0.5"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+<link name="inner_right_front_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+      <material name="grey">
+       <color rgba="0.4 0.4 0.4 1"/>
+      </material>
+    </visual>
+     <collision>
+      <geometry>
+        <cylinder length="0.17" radius="0.1741" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.00498" ixy="0.0" ixz="0.0" iyy="0.00498" iyz="0.0" izz="0.00845"/>
+     </inertial>
+  </link>
+
+ <joint name="inner_right_front_wheel_joint" type="fixed">
+    <axis xyz="0 0 1"/>
+    <parent link="right_front_wheel"/>
+    <child link="inner_right_front_wheel"/>
+    <origin rpy="0 0 0 " xyz="0 0 0"/>
+    <limit effort="100" velocity="100"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
+
+
+
+
+
+<link name="car_body">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://vehicle_model/mesh/toyotaComsFinal1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://vehicle_model/mesh/toyotaComsFinal1.dae"/>
+      </geometry>
+     <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+     <inertia ixx="0.012" ixy="0.0" ixz="0.0" iyy="0.012" iyz="0.0" izz="0.008"/>
+    </inertial>
+  </link>
+
+<joint name="car_body_joint" type="fixed">
+    <axis xyz="0 0 0"/>
+    
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="car_body"/>
+  </joint>
+
+
+
+</robot>

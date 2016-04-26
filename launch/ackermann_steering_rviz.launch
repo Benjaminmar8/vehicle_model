@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<!-- ackermann_steering_rviz.launch-->
+
+<launch>
+  <arg name="namespace" default="ackermann_steering"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="vrep_ros_baselink_broadcaster" args="-0.24 0 0 1.571 3.1415 1.571 base_link_vrep base_link 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="vrep_ros_world_broadcaster" args="0 0 0 0 0 0 world_vrep world 100"/> 
+
+  <include file="$(find vehicle_model)/launch/vehicle_model.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+  <!-- joy node -->
+  <node respawn="true" pkg="joy" type="joy_node" name="joy_node" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0" />
+    <!--<remap from="joy" to="/joyRosBubbleRob/joy"/> -->
+  </node>
+
+  <!-- ackerman steering joy node -->
+  <node respawn="true" pkg="vehicle_model" type="ackermannSteering" name="joyAckermannSteering" >
+    
+  </node>
+
+  <!-- vehicle pose publisher node -->
+  <node respawn="true" pkg="vehicle_state_publisher" type="vehicle_state_publisher_node" name="vsp_node" output="screen">
+    
+  </node>
+
+  <!-- vehicle path follower node -->
+  <node respawn="true" pkg="vehicle_path_follower" type="vehicle_path_follower_node" name="vpf_node" output="screen" >
+    <param name="P_SteerGain" type="double" value="0.0" />
+    <param name="I_SteerGain" value="0.0" />
+    <param name="D_SteerGain" value="0.0" />
+    <param name="I_SteerMin" value="0.0" />
+    <param name="I_SteerMax" value="0.0" />
+  </node>
+
+ <node respawn="true" pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen" >
+    <param name="target_frame_name" type="string" value="/world" />
+    <param name="Source_frame_name" type="string" value="/base_link" />
+    <param name="trajectory_update_rate" type="double" value="25" />
+   <param name="trajectory_publish_rate" type="double" value="25" />
+  </node>
+
+  <include file="$(find vehicle_model)/launch/rviz.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+</launch>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!-- ackermann_steering_rviz.launch-->
+
+<launch>
+  <arg name="namespace" default="vehicle_model"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="vrep_ros_baselink_broadcaster" args="-0.24 0 0 1.571 3.1415 1.571 base_link_vrep base_link 20"/> 
+ <!-- <node pkg="tf" type="static_transform_publisher" name="vrep_ros_frontsteerwheel_broadcaster" args="-0.24 0 0 1.571 3.1415 1.571 left_front_wheel_vrep left_front_wheel 20"/>  -->
+  <node pkg="tf" type="static_transform_publisher" name="vrep_ros_world_broadcaster" args="0 0 0 0 0 0 world_vrep world 100"/> 
+  
+  <include file="$(find vehicle_model)/launch/vehicle_model.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+  <!-- Read joint positions from a GUI, then publish them to joint_states. -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher"
+        type="joint_state_publisher" ns="$(arg namespace)">
+    <param name="rate" value="30"/>
+    <param name="use_gui" value="true"/>
+  </node>
+
+  <include file="$(find vehicle_model)/launch/rviz.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+
+</launch>
